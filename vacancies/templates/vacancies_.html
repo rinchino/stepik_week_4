@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <main class="container mt-3">
+        <section>
+            <h1 class="h1 text-center mx-auto mt-4 py-5"><strong>Поиск вакансий</strong></h1>
+            <div class="row">
+                <div class="col-12 col-md-8 col-lg-6 offset-lg-3 offset-md-2">
+                    <form class="form-inline mb-3" enctype="multipart/form-data">
+                        <div class="form-group col-8 col-md-10 pl-0">
+                            <input class="form-control w-100" type="search" placeholder="Backend" aria-label="Backend">
+                        </div>
+                        <div class="form-group col-4 col-md-2 pl-0">
+                            <button class="btn btn-primary w-100" type="submit">Найти вакансии</button>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+        </section>
+        <section>
+            <p class="text-center pt-1">Найдено {{ vacancies.count }} вакансий</p>
+            <div class="row mt-5">{% for vacancy in vacancies %}
+                <div class="col-12 col-lg-8 offset-lg-2 m-auto">
+                    <div class="card mb-4">
+                        <div class="card-body px-4">
+                            <div class="row">
+                                <div class="col-12 col-md-8 col-lg-9">
+                                    <h2 class="h2 pb-2">{{ vacancy.specialty.code|capfirst }}-{{ vacancy.title }}</h2>
+                                    <p class="mb-2">{{ vacancy.specialty.title }} • {{ vacancy.title|capfirst }} •
+                                        {{ vacancy.skills|join:"" }}</p>
+                                    <p>От {{ vacancy.salary_min }} до {{ vacancy.salary_max }} руб.</p>
+                                    <p class="text-muted pt-1">{{ vacancy.published_at|date:'d E' }}</p>
+                                </div>
+                                <div class="col-12 col-md-4 col-lg-3 d-flex align-items-end">
+                                    <a href="#"><img src="{{ MEDIA_URL }}{{ vacancy.company.logo.url }}" width="130" height="80"
+                                                     alt=""></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>{% endfor %}
+        </section>
+    </main>
+{% endblock %}
