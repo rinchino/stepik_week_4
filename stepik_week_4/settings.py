@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'vacancies',
     'crispy_forms',
+    'account',
 ]
 
 MIDDLEWARE = [
@@ -132,6 +133,8 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 LOGGING = {
     'version': 1,
     'filters': {
@@ -153,3 +156,6 @@ LOGGING = {
         },
     },
 }
+
+
+LOGIN_REDIRECT_URL = '/login'

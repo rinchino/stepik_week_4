@@ -3,6 +3,7 @@ from django.contrib import admin
 # Register your models here.
 from vacancies.models import Specialty, Company
 
+
 class VacancyAdmin(admin.ModelAdmin):
     fields = ['logo', 'picture']
 

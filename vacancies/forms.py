@@ -1,5 +1,5 @@
 from django import forms
-
+from django.contrib.auth.models import User
 from vacancies.models import Vacancy, Company, Application
 
 
@@ -25,3 +25,8 @@ class VacancyForm(forms.ModelForm):
     class Meta:
         model = Vacancy
         exclude = ('company', 'published_at')
+
+
+
+
+

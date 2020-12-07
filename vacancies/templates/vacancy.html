@@ -20,7 +20,9 @@
           <div style="line-height: 1.8;">
             <p>{{ vacancy.description|safe }}</p>
           </div>
-          <form action="/echo" class="card mt-4 mb-3" enctype="multipart/form-data">
+          <form action="{{ request.path }}" method="POST" class="card mt-4 mb-3" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form }}
             <div class="card-body mx-3">
               <p class="h5 mt-3 font-weight-normal">Отозваться на вакансию</p>
               <div class="form-group">
@@ -42,4 +44,4 @@
       </div>
     </div>
   </main>
- {% endblock  %}
+ {% endblock %}
