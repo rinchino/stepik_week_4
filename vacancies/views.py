@@ -185,10 +185,10 @@ class MycompanyVacancy(LoginRequiredMixin, FormMixin, DetailView):
     def post(self, request, vacancy_id):
         try:
             vacancy_form =self.form_class(request.POST, request.FILES, instance=request.user.company),
-            reply_form=self.reply_form_class(request.POST.requesr.FILES,instance=request.user),
+            reply_form=self.reply_form_class(request.POST.request.FILES,instance=request.user),
         except ObjectDoesNotExist:
             vacancy_form =self.form_class(request.POST, request.FILES),
-            reply_form=self.reply_form_class(request.POST.requesr.FILES)
+            reply_form=self.reply_form_class(request.POST.request.FILES)
 
         if not vacancy_form.is_valid():
             return self.render_to_response({
