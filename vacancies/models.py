@@ -27,7 +27,7 @@ class Company(models.Model):
     logo = models.ImageField(upload_to='images/logo/')
     description = models.TextField()
     employee_count = models.IntegerField()
-    owner = models.OneToOneField(User, on_delete=models.PROTECT, related_name='company')
+    owner = models.OneToOneField(User,null=True,  on_delete=models.PROTECT, related_name='company')
 
     class Meta:
        verbose_name_plural = 'Companies'

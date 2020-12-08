@@ -14,8 +14,9 @@ from django.views.generic.edit import FormMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import CreateView
 from django.contrib.auth.views import LoginView
+from django.contrib import messages
 
-from vacancies.forms import ApplicationForm, CompanyForm, VacancyForm
+from vacancies.forms import ApplicationForm, CompanyForm, VacancyForm, ReplyForm
 from vacancies.models import Company
 from vacancies.models import Specialty
 # Create your views here.
@@ -23,14 +24,14 @@ from vacancies.models import Vacancy, Application
 
 
 class MySignupView(CreateView):
-   form_class = UserCreationForm
-   success_url = 'login'
-   template_name = 'register.html'
+    form_class=UserCreationForm
+    success_url='login'
+    template_name='register.html'
 
 
 class MyLoginView(LoginView):
-    redirect_authenticated_user = True
-    template_name = 'login.html'
+    redirect_authenticated_user=True
+    template_name='login.html'
 
 
 class MainView(TemplateView):
@@ -102,7 +103,7 @@ class DetailVacancyView(TemplateView):
                 'application_form': application_form,
             })
 
-            application=application_form.save(commit=False)
+            application=application_form.save(commit=True)
             application.vacancy_id=vacancy_id
             application.user=request.user
             application.save()
@@ -112,7 +113,7 @@ class DetailVacancyView(TemplateView):
 
 @login_required
 def mycompany_create(request):
-   return render(request, 'company/company-create.html')
+    return render(request, 'company/company-create.html')
 
 
 class MyCompanyView(LoginRequiredMixin, TemplateResponseMixin, View):
@@ -140,7 +141,7 @@ class MyCompanyView(LoginRequiredMixin, TemplateResponseMixin, View):
                 'form': company_form,
             })
 
-        company=company_form.save(commit=False)
+        company=company_form.save(commit=True)
         if company.owner is None:
             company.owner=request.user
         company.save()
@@ -161,15 +162,82 @@ class MyCompanyVacancies(LoginRequiredMixin, TemplateResponseMixin, View):
 
 
 class MycompanyVacancy(LoginRequiredMixin, FormMixin, DetailView):
-   model = Vacancy
-   context_object_name = 'vacancy'
-   form_class = VacancyForm
-   template_name = 'company/vacancy-edit.html'
-   pk_url_kwarg = 'vacancy_id'
-   queryset = Vacancy.objects.select_related('company', 'specialty')
-   def get_context_data(self, **kwargs):
-       context = super().get_context_data()
-       return context
+    model=Vacancy
+    model=Application
+    context_object_name='vacancy'
+    form_class = VacancyForm
+    reply_form_class = ReplyForm
+    template_name='company/vacancy-edit.html'
+    pk_url_kwarg='vacancy_id'
+    queryset=Vacancy.objects.select_related('company', 'specialty')
+
+    def get(self, request, *args, **kwargs):
+        try:
+            return self.render_to_response({
+                'form': self.form_class(instance=request.user.company),
+            })
+        except ObjectDoesNotExist:
+            messages.info(request, 'У вас пока нет вакансий, но вы можете создать первую!')
+            return self.render_to_response({
+                'form': self.form_class(),
+            })
+
+    def post(self, request, vacancy_id):
+        try:
+            vacancy_form =self.form_class(request.POST, request.FILES, instance=request.user.company),
+            reply_form=self.reply_form_class(request.POST.requesr.FILES,instance=request.user),
+        except ObjectDoesNotExist:
+            vacancy_form =self.form_class(request.POST, request.FILES),
+            reply_form=self.reply_form_class(request.POST.requesr.FILES)
+
+        if not vacancy_form.is_valid():
+            return self.render_to_response({
+                'form': vacancy_form,
+            })
+
+        vacancy=vacancy_form.save(commit=True)
+        vacancy.vacancy_id=vacancy_id
+        vacancy.user=request.user
+        vacancy.save()
+        messages.info(request, 'Вакансия обновлена')
+        return redirect(request.path)
+
+
+
+    #def get_context_data(self, vacancy_id, **kwargs):
+    #    context=super().get_context_data()
+    #    vacancy=get_object_or_404(Vacancy, pk=vacancy_id)
+    #    context['vacancy']=vacancy
+    #    context['reply_form']=ReplyForm()
+    #    return context
+    #
+    #
+    #def post(self, request, vacancy_id):
+    #    vacancy=get_object_or_404(Vacancy, pk=vacancy_id)
+    #    reply_form=self.reply_form_class(request.POST)
+#
+    #if not reply_form.is_valid():
+    #    return render(request, self.template_name, {
+    #        'vacancy': vacancy,
+    #        'reply_form': reply_form
+    #    })
+    #if not request.user.is_authenticated:
+    #    messages.error(request, 'Отклик могут оставить только авторизованные.')
+    #    return render(request, self.template_name, {
+    #        'vacancy': vacancy,
+    #        'reply_form': reply_form,
+    #    })
+#
+    #    reply=reply_form.save(commit=True)
+    #    reply.vacancy_id=vacancy_id
+    #    reply.user=request.user
+    #    reply.save()
+    #    messages.info(request, 'Ваш отклик отправлен')
+    #    return redirect(request.path)
+
+
+
+
 
 
 class CompanyView(TemplateView):

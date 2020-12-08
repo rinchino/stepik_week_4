@@ -14,13 +14,14 @@
           {% include 'company/mycompany-nav.html' %}
           {% endif %}
       </div>
+
       <div class="col-12 col-lg-8">
         <div class="card">
           <div class="card-body px-4 pb-4 tab-content">
             <!-- Tab -->
             <section>
-              <h2 class="h4 pt-2 pb-3">{{ vacancy.specialty.code|capfirst }} {{ vacancy.title }}</h2>
-         <!----     <p class="alert alert-info" role="alert">Вакансия обновлена</p> -->
+              <h2 class="h4 pt-2 pb-3">Backend Middle/Senior</h2>
+              <p class="alert alert-info" role="alert">Вакансия обновлена</p>
               <form action="{{ request.path }}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                  {{ form|crispy }}
@@ -48,6 +49,7 @@
               </div>
               <input type="submit" class="btn btn-primary mt-4 mb-2" value="Отправить">
             </div>
+
               <!-- END Application 1 -->
               <!-- END Applications -->
             </section>
