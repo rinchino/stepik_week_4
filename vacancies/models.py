@@ -48,7 +48,6 @@ class Vacancy(models.Model):
     salary_min = models.DecimalField(max_digits=20, decimal_places=2)
     salary_max = models.DecimalField(max_digits=20, decimal_places=2)
     published_at = models.DateField()
-
     class Meta:
         verbose_name_plural = 'Vacancies'
 

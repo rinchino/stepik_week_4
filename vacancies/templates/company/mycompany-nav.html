@@ -1,7 +1,9 @@
 <aside class="pt-3 pb-4 px-4 mb-5 card">
           <h1 class="h4 pt-2 pb-2">Моя компания</h1>
           <div class="nav flex-column nav-pills">
-            <a class="nav-link active" href="{% url 'mycompany' %}">1. Информация о&nbsp;компании</a>
-            <a class="nav-link" href="{% url 'mycompany_vacancies' %}">2. Вакансии</a>
+              {% url 'mycompany' as mycompany_url %}
+              {% url 'mycompany_vacancies' as mycompany_vacancies_url %}
+            <a class="nav-link {% if request.path == mycompany_url %}active{% endif %}"  href="{{ mycompany_url }}">1. Информация о&nbsp;компании</a>
+            <a class="nav-link {% if request.path == mycompany_vacancies_url %}active{% endif %}" href="{{ mycompany_vacancies_url }}">2. Вакансии</a>
           </div>
         </aside>

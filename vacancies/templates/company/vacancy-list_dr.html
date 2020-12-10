@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
 
-{% block style %} body {background-color: #F6F2E6;} {% endblock style %}
 
 {% block content %}
-
+<style>
+    body {
+      background-color: #F6F2E6;
+    }
+  </style>
   <main class="container mt-3 pb-5">
     <div class="row mt-5">
       <div class="col-12 col-lg-4">
@@ -18,45 +20,32 @@
             <section class="tab-pane fade show active">
               <h2 class="h4 pt-2 pb-3">Вакансии</h2>
               <!-- vacancy state 1 -->
-              <div class="card mt-3">
+              <div class="card mt-3">{% for vacancy in vacancies %}
+                {% if vacancy not in vacancies %}
+                <div class="col-6 col-lg-4 text-right"> <!--{% url 'mycompany_vacancy' vacancy_id as mycompany_vacancy_url %}-->
+                      <a href="{% url 'mycompany_vacancy' vacancy.id %}" class="btn btn-outline-info">Добавить вакансию</a>
+                </div>
+                {% else %}
                 <div class="card-body px-4">
                   <div class="row align-items-center">
-                    <div class="col-6 col-lg-8">
-                      <a href="#" class="mb-1">Backend-разработчик</a>
-                      <p class="mb-1">
-                        <span class="mr-4">120  000</span><a href="#" class="text-info">3 отклика</a>
+                    <div class="col-6 col-lg-8"><!--{% url 'detail_vacancy' vacancy_id as detail_vacancy_url %}-->
+                      <a href="{% url 'detail_vacancy' vacancy.id %}" class="mb-1">{{ vacancy.specialty.code|capfirst }}-{{ vacancy.title }}</a>
+                      <p class="mb-1"><!--{% url 'detail_vacancy' vacancy_id as detail_vacancy_url %}-->
+                        <span class="mr-4">{{ vacancy.salary_max }}</span><a href="{% url 'mycompany_vacancy' vacancy.id %}" class="text-info">{{ vacancy.applications.count }} отклика</a>
                       </p>
                     </div>
-                    <div class="col-6 col-lg-4 text-right">
-                      <a href="#" class="btn btn-outline-info">Изменить</a>
+                    <div class="col-6 col-lg-4 text-right"> <!--{% url 'mycompany_vacancy' vacancy_id as mycompany_vacancy_url %}-->
+                      <a href="{% url 'mycompany_vacancy' vacancy.id %}" class="btn btn-outline-info">Изменить</a>
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> {% endif %}{% endfor %}
               <!-- END vacancy state 1 -->
-              <!-- vacancy state 2 -->
-              <div class="card mt-3">
-                <div class="card-body px-4">
-                  <div class="row align-items-center">
-                    <div class="col-6 col-lg-8">
-                      <a href="#" class="mb-1">Backend-разработчик</a>
-                      <p class="mb-1">
-                        <span class="mr-4">90  000</span><span class="text-muted">Нет откликов</span>
-                      </p>
-                    </div>
-                    <div class="col-6 col-lg-4 text-right">
-                      <a href="#" class="btn btn-outline-info">Изменить</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- END vacancy state 2 -->
             </section>
           </div>
         </div>
       </div>
     </div>
   </main>
-
 
 {% endblock content %}
