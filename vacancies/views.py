@@ -159,10 +159,72 @@ class MyCompanyVacancies(LoginRequiredMixin, TemplateResponseMixin, View):
             raise Http404(f'User"{self.request.user.username}" have no company')
 
 
+class MyCompanyCreateView(TemplateView):
+    model=Vacancy
+    form_class= VacancyForm
+    template_name= 'company/vacancy-edit.html'
+
+    def get(self, request, *args, **kwargs):
+        try:
+            return self.render_to_response({
+                'vacancy_form': self.form_class(),
+            })
+        except ObjectDoesNotExist:
+            messages.info(request, 'У вас пока нет вакансий, но вы можете создать первую!')
+            return self.render_to_response({
+                'vacancy_form': self.form_class(),
+            })
+    def post(self,request):
+        vacancy_form=self.form_class(request.POST)
+        if not vacancy_form.is_valid():
+            return render(request.self.template_name, {
+                'vacancy_form': vacancy_form
+            })
+
+        vacancy=vacancy_form.save(commit=False)
+        #vacancy.vacancy_id=vacancy_id
+        vacancy.user=request.user
+        vacancy.save()
+        messages.info(request, 'Вакансия обновлена')
+        return redirect(request.path)
 
 
 
 
+#class DetailVacancyView(TemplateView):
+#    form_class=ApplicationForm
+#    template_name='vacancy.html'
+#
+#    def get_context_data(self, vacancy_id, **kwargs):
+#        context=super().get_context_data()
+#        vacancy=get_object_or_404(Vacancy, pk=vacancy_id)
+#        context['vacancy']=vacancy
+#        context['application_form']=ApplicationForm()
+#        return context
+#
+#    def post(self, request, vacancy_id):
+#        vacancy=get_object_or_404(Vacancy, pk=vacancy_id)
+#        application_form=self.form_class(request.POST)
+#
+#        if not application_form.is_valid():
+#            return render(request, self.template_name, {
+#                'vacancy': vacancy,
+#                'application_form': application_form
+#            })
+#        if not request.user.is_authenticated:
+#            messages.error(request, 'Отклик могут оставить только авторизованные.')
+#            return render(request, self.template_name, {
+#                'vacancy': vacancy,
+#                'application_form': application_form,
+#            })
+#
+#        application=application_form.save(commit=False)
+#        application.vacancy_id=vacancy_id
+#        application.user=request.user
+#        application.save()
+#        messages.info(request, 'Ваш отклик отправлен')
+#        return redirect(request.path)
+#
 class MycompanyVacancy(LoginRequiredMixin, FormMixin, DetailView):
     model=Vacancy
     context_object_name='vacancy'
@@ -197,40 +259,33 @@ class MycompanyVacancy(LoginRequiredMixin, FormMixin, DetailView):
         return redirect(request.path)
 
 
+#def get(self, request, *args, **kwargs):
+#       try:
+#           return self.render_to_response({
+#               'form': self.form_class(instance=request.user.company),
+#           })
+#       except ObjectDoesNotExist:
+#           messages.info(request, 'У вас пока нет вакансий, но вы можете создать первую!')
+#           return self.render_to_response({
+#               'form': self.form_class(),
+#           })
 
-    # def get_context_data(self, vacancy_id, **kwargs):
-    #    context=super().get_context_data()
-    #    vacancy=get_object_or_404(Vacancy, pk=vacancy_id)
-    #    context['vacancy']=vacancy
-    #    context['reply_form']=ReplyForm()
-    #    return context
-    #
-    #
-    # def post(self, request, vacancy_id):
-    #    vacancy=get_object_or_404(Vacancy, pk=vacancy_id)
-    #    reply_form=self.reply_form_class(request.POST)
+#   def post(self, request):
+#       try:
+#           vacancy_form=self.form_class(request.POST, request.FILES, instance=request.user.company)
+#       except ObjectDoesNotExist:
+#           vacancy_form=self.form_class(request.POST, request.FILES)
 
+#       if not vacancy_form.is_valid():
+#           return self.render_to_response({
+#               'vacancy': vacancy_form,
+#           })
 
-#
-# if not reply_form.is_valid():
-#    return render(request, self.template_name, {
-#        'vacancy': vacancy,
-#        'reply_form': reply_form
-#    })
-# if not request.user.is_authenticated:
-#    messages.error(request, 'Отклик могут оставить только авторизованные.')
-#    return render(request, self.template_name, {
-#        'vacancy': vacancy,
-#        'reply_form': reply_form,
-#    })
-#
-#    reply=reply_form.save(commit=True)
-#    reply.vacancy_id=vacancy_id
-#    reply.user=request.user
-#    reply.save()
-#    messages.info(request, 'Ваш отклик отправлен')
-#    return redirect(request.path)
-
+#       vacancy=vacancy_form.save(commit=False)
+#       vacancy.user=request.user
+#       vacancy.save()
+#       messages.info(request, 'Вакансия обновлена')
+#       return redirect(request.path)
 
 class CompanyView(TemplateView):
     model=Vacancy

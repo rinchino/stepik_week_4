@@ -25,11 +25,15 @@ from django.urls import path
 from django.urls import path, include
 #from stepik_week_4 import settings
 from vacancies import views
-from vacancies.views import CompanyView, MyCompanyView, MyCompanyVacancies, MyLoginView, MySignupView
+from vacancies.views import CompanyView, MyCompanyView, MyCompanyVacancies, MyLoginView, MySignupView, \
+    MyCompanyCreateView
 from vacancies.views import DetailVacancyView
 from vacancies.views import MainView
 from vacancies.views import VacancyCatView
 from vacancies.views import VacancyView
+
+
+
 
 urlpatterns = [
 
@@ -42,6 +46,7 @@ urlpatterns = [
     path('mycompany/', views.MyCompanyView.as_view(), name='mycompany'),
     path('mycompany/create', views.mycompany_create, name='mycompany_create'),
     path('mycompany/vacancies', views.MyCompanyVacancies.as_view(), name='mycompany_vacancies'),
+    path('mycompany/vacancies/create', views.MyCompanyCreateView.as_view(), name='mycompany_vacancy_create'),
     path('mycompany/vacancies/<int:vacancy_id>', views.MycompanyVacancy.as_view(), name='mycompany_vacancy'),
     path('__debug__/', include(debug_toolbar.urls)),
     path('login/', MyLoginView.as_view(), name='login'),
