@@ -13,27 +13,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 import debug_toolbar
-from django.conf.urls.static import static
 from django.conf import settings
-from django.contrib import admin
 from django.conf.urls import url
-
-#from django.template.context_processors import static
+from django.conf.urls.static import static
+from django.contrib import admin
 from django.contrib.auth.views import LogoutView
-from django.urls import include
-from django.urls import path
 from django.urls import path, include
-#from stepik_week_4 import settings
+
 from vacancies import views
-from vacancies.views import CompanyView, MyCompanyView, MyCompanyVacancies, MyLoginView, MySignupView, \
-    MyCompanyCreateView
+from vacancies.views import CompanyView, MyLoginView, MySignupView
 from vacancies.views import DetailVacancyView
 from vacancies.views import MainView
 from vacancies.views import VacancyCatView
 from vacancies.views import VacancyView
-
-
-
 
 urlpatterns = [
 
@@ -46,18 +38,16 @@ urlpatterns = [
     path('mycompany/', views.MyCompanyView.as_view(), name='mycompany'),
     path('mycompany/create', views.mycompany_create, name='mycompany_create'),
     path('mycompany/vacancies', views.MyCompanyVacancies.as_view(), name='mycompany_vacancies'),
-    path('mycompany/vacancies/create', views.MyCompanyCreateView.as_view(), name='mycompany_vacancy_create'),
-    path('mycompany/vacancies/<int:vacancy_id>', views.MycompanyVacancy.as_view(), name='mycompany_vacancy'),
+    path('mycompany/vacancies/create', views.MyVacanciesСreateView.as_view(), name='mycompany_vacancy_create'),
+    path('mycompany/vacancies/<int:id>', views.MyVacancyEditView.as_view(), name='mycompany_vacancy'),
     path('__debug__/', include(debug_toolbar.urls)),
     path('login/', MyLoginView.as_view(), name='login'),
     url('logout/', LogoutView.as_view(), name='logout'),
     path('register/', MySignupView.as_view(), name='register'),
-    #url(r'^account/', include('account.urls')),
-    #url(r'^admin/', admin.site.urls),
     path('admin/', admin.site.urls),
 
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns+=static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

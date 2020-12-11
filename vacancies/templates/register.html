@@ -9,9 +9,9 @@
             <h1 class="h3 mb-3 font-weight-normal">Джуманджи</h1>
             <p class="h5 font-weight-light">Создайте аккаунт</p>
           </div>
-        <form {{ request.path }} method="post" action="signup">
+        <form method="post" action="register" class="col-lg-20 mt-4 ">
           {% csrf_token %}
-          {{ form|crispy }}
+          <table>{{ form|crispy }}</table>
           <div class="checkbox mb-3"></div>
           <button class="btn btn-primary btn-lg btn-block" type="submit">Зарегистрироваться</button>
         </form>
