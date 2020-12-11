@@ -2,23 +2,23 @@ import os
 
 import django
 
-os.environ["DJANGO_SETTINGS_MODULE"]='stepik_week_4.settings'
-django.setup()
-
 from vacancies import data
 from vacancies.models import Company
 from vacancies.models import Specialty
 from vacancies.models import Vacancy
 
+os.environ["DJANGO_SETTINGS_MODULE"] = 'stepik_week_4.settings'
+django.setup()
+
 for specialty_data in data.specialties:
-    specialty=Specialty.objects.create(
+    specialty = Specialty.objects.create(
         code=specialty_data["code"],
         title=specialty_data['title'],
     )
     # specialty = Specialty.objects.all()
 
 for company_data in data.companies:
-    company=Company.objects.create(
+    company = Company.objects.create(
         name=company_data['title'],
         location=company_data['location'],
         logo=company_data['logo'],
@@ -28,7 +28,7 @@ for company_data in data.companies:
     # company=Company.objects.all()
 
 for vacancy_data in data.jobs:
-    vacancy=Vacancy.objects.create(
+    vacancy = Vacancy.objects.create(
         title=vacancy_data['title'],
         specialty=specialty,
         company=company,

@@ -24,69 +24,69 @@ from vacancies.models import Vacancy
 
 
 class MySignupView(CreateView):
-    form_class=UserCreationForm
-    success_url='/login'
-    template_name='register.html'
+    form_class = UserCreationForm
+    success_url = '/login'
+    template_name = 'register.html'
 
 
 class MyLoginView(LoginView):
-    redirect_authenticated_user=True
-    template_name='login.html'
+    redirect_authenticated_user = True
+    template_name = 'login.html'
 
 
 class MainView(TemplateView):
-    model=Company
-    model=Vacancy
-    model=Specialty
-    template_name='main.html'
+    model = Company
+    model = Vacancy
+    model = Specialty
+    template_name = 'main.html'
 
     def get_context_data(self, **kwargs):
-        context=super(MainView, self).get_context_data()
-        context['companies']=Company.objects.all()
-        context['specialties']=Specialty.objects.all()
-        context['vacancies']=Vacancy.objects.all()
+        context = super(MainView, self).get_context_data()
+        context['companies'] = Company.objects.all()
+        context['specialties'] = Specialty.objects.all()
+        context['vacancies'] = Vacancy.objects.all()
         return context
 
 
 class VacancyView(TemplateView):
-    model=Vacancy
-    model=Company
-    template_name='vacancies_.html'
+    model = Vacancy
+    model = Company
+    template_name = 'vacancies_.html'
 
     def get_context_data(self, **kwargs):
-        context=super(VacancyView, self).get_context_data()
-        context['companies']=Company.objects.all()
-        context['vacancies']=Vacancy.objects.all()
+        context = super(VacancyView, self).get_context_data()
+        context['companies'] = Company.objects.all()
+        context['vacancies'] = Vacancy.objects.all()
         return context
 
 
 class VacancyCatView(TemplateView):
-    model=Vacancy
-    model=Specialty
-    template_name='vacancy_cat.html'
+    model = Vacancy
+    model = Specialty
+    template_name = 'vacancy_cat.html'
 
     def get_context_data(self, specialty_code, **kwargs):
-        context=super().get_context_data()
-        specialty=get_object_or_404(Specialty, code=specialty_code)
-        context['vacancies']=Vacancy.objects.filter(specialty=specialty).select_related('company', 'specialty')
-        context['title']=specialty.title
+        context = super().get_context_data()
+        specialty = get_object_or_404(Specialty, code=specialty_code)
+        context['vacancies'] = Vacancy.objects.filter(specialty=specialty).select_related('company', 'specialty')
+        context['title'] = specialty.title
         return context
 
 
 class DetailVacancyView(TemplateView):
-    form_class=ApplicationForm
-    template_name='vacancy.html'
+    form_class = ApplicationForm
+    template_name = 'vacancy.html'
 
     def get_context_data(self, vacancy_id, **kwargs):
-        context=super().get_context_data()
-        vacancy=get_object_or_404(Vacancy, pk=vacancy_id)
-        context['vacancy']=vacancy
-        context['application_form']=ApplicationForm()
+        context = super().get_context_data()
+        vacancy = get_object_or_404(Vacancy, pk=vacancy_id)
+        context['vacancy'] = vacancy
+        context['application_form'] = ApplicationForm()
         return context
 
     def post(self, request, vacancy_id):
-        vacancy=get_object_or_404(Vacancy, pk=vacancy_id)
-        application_form=self.form_class(request.POST)
+        vacancy = get_object_or_404(Vacancy, pk=vacancy_id)
+        application_form = self.form_class(request.POST)
 
         if not application_form.is_valid():
             return render(request, self.template_name, {
@@ -100,9 +100,9 @@ class DetailVacancyView(TemplateView):
                 'application_form': application_form,
             })
 
-        application=application_form.save(commit=False)
-        application.vacancy_id=vacancy_id
-        application.user=request.user
+        application = application_form.save(commit=False)
+        application.vacancy_id = vacancy_id
+        application.user = request.user
         application.save()
         messages.info(request, 'Ваш отклик отправлен')
         return render(request, 'sent.html')
@@ -114,8 +114,8 @@ def mycompany_create(request):
 
 
 class MyCompanyView(LoginRequiredMixin, TemplateResponseMixin, View):
-    form_class=CompanyForm
-    template_name='company/company-edit.html'
+    form_class = CompanyForm
+    template_name = 'company/company-edit.html'
 
     def get(self, request, *args, **kwargs):
         try:
@@ -129,18 +129,18 @@ class MyCompanyView(LoginRequiredMixin, TemplateResponseMixin, View):
 
     def post(self, request):
         try:
-            company_form=self.form_class(request.POST, request.FILES, instance=request.user.company)
+            company_form = self.form_class(request.POST, request.FILES, instance=request.user.company)
         except ObjectDoesNotExist:
-            company_form=self.form_class(request.POST, request.FILES)
+            company_form = self.form_class(request.POST, request.FILES)
 
         if not company_form.is_valid():
             return self.render_to_response({
                 'form': company_form,
             })
 
-        company=company_form.save(commit=True)
+        company = company_form.save(commit=True)
         if company.owner is None:
-            company.owner=request.user
+            company.owner = request.user
         company.save()
         messages.info(request, 'Информация о компании обновлена')
         return redirect(request.path)
@@ -148,8 +148,8 @@ class MyCompanyView(LoginRequiredMixin, TemplateResponseMixin, View):
 
 class MyCompanyVacancies(View):
     def get(self, request, *args, **kwargs):
-        company=Company.objects.filter(owner=request.user).first()
-        vacancies=company.vacancies.annotate(count=Count('applications')) \
+        company = Company.objects.filter(owner=request.user).first()
+        vacancies = company.vacancies.annotate(count=Count('applications')) \
             .all()
         if len(vacancies) == 0:
             return render(
@@ -176,7 +176,7 @@ class MyCompanyVacancies(View):
 
 class MyVacanciesСreateView(View):
     def get(self, request, *args, **kwargs):
-        vacancy_form=VacancyForm()
+        vacancy_form = VacancyForm()
         return render(
             request,
             'company/vacancy-edit.html',
@@ -187,11 +187,11 @@ class MyVacanciesСreateView(View):
         )
 
     def post(self, request, *args, **kwargs):
-        my_company_vac=models.Company.objects.filter(owner=request.user)
-        vacancy_form=VacancyForm(request.POST)
+        my_company_vac = models.Company.objects.filter(owner=request.user)
+        vacancy_form = VacancyForm(request.POST)
         if vacancy_form.is_valid():
-            vacancy=vacancy_form.save(commit=False)
-            vacancy.company=my_company_vac.first()
+            vacancy = vacancy_form.save(commit=False)
+            vacancy.company = my_company_vac.first()
             vacancy.save()
             return redirect(
                 request.path,
@@ -211,10 +211,10 @@ class MyVacanciesСreateView(View):
 
 class MyVacancyEditView(View):
     def get(self, request, id, *args, **kwargs):
-        vacancy=Vacancy.objects.filter(id=id).first()
+        vacancy = Vacancy.objects.filter(id=id).first()
         if not vacancy:
             raise Http404
-        applications=vacancy.applications.all()
+        applications = vacancy.applications.all()
         return render(
             request,
             'company/vacancy-edit.html',
@@ -227,15 +227,15 @@ class MyVacancyEditView(View):
         )
 
     def post(self, request, id, *args, **kwargs):
-        my_company_vac=models.Company.objects.filter(owner=request.user)
-        vacancy=models.Vacancy.objects.filter(
+        my_company_vac = models.Company.objects.filter(owner=request.user)
+        vacancy = models.Vacancy.objects.filter(
             id=id, company=my_company_vac.first()) \
             .first()
-        vacancy_form=VacancyForm(request.POST)
+        vacancy_form = VacancyForm(request.POST)
         if vacancy_form.is_valid():
-            vacancy_form=VacancyForm(request.POST,
-                                     request.FILES,
-                                     instance=vacancy)
+            vacancy_form = VacancyForm(request.POST,
+                                       request.FILES,
+                                       instance=vacancy)
             vacancy_form.save()
             return HttpResponseRedirect(request.path, )
         else:
@@ -248,14 +248,14 @@ class MyVacancyEditView(View):
 
 
 class CompanyView(TemplateView):
-    model=Vacancy
-    model=Company
-    template_name='company.html'
+    model = Vacancy
+    model = Company
+    template_name = 'company.html'
 
     def get_context_data(self, id, **kwargs):
-        context=super().get_context_data()
-        company=get_object_or_404(Company, id=id)
-        context['vacancies']=Vacancy.objects.filter(company=company).select_related('company', 'specialty')
+        context = super().get_context_data()
+        company = get_object_or_404(Company, id=id)
+        context['vacancies'] = Vacancy.objects.filter(company=company).select_related('company', 'specialty')
         return context
 
 
